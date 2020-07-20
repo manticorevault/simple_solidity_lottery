@@ -1,4 +1,4 @@
-pragma solidity >=0.4.21
+pragma solidity ^0.4.25;
 
 contract Lottery {
     //Create an address-typed variable for the manager with public visibility
@@ -8,7 +8,7 @@ contract Lottery {
     //Create a dynamic array that only contains addresses (the playeres).
     address[] public players; 
 
-    constructor() public {
+    function lottery() public {
         //Use msg.sender to get the address of the account invoking the contract
         manager = msg.sender;
     }
@@ -24,7 +24,7 @@ contract Lottery {
     //Create a helper function the help find the winner
     function random() private view returns (uint) {
         //Get the params and returns it as an uint
-        return uint(keccak256(abi.encodedPacked(block.difficulty, now, players)));
+        return uint(keccak256(block.difficulty, now, players));
     }
     
     function pickWinner() public restricted {
@@ -32,7 +32,7 @@ contract Lottery {
         //Will get a number between 0 and the players.length
         uint index = random() % players.length;
         //Send all the of money in the contract to the winner`s address
-        players[index].transfer(address(this).balance); 
+        players[index].transfer(this.balance); 
         //Reset the players array to a new dynamic array, with initial size 0
         players = new address[](0);
     }
